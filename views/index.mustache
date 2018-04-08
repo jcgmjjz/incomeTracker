@@ -1,0 +1,192 @@
+<html lang="en">
+  <head>
+    <title>{{name}} Income Tracker {{name}}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <!--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
+            <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="./">Income Tracker</a>
+              <a class="dropdown-item" href="./newIncome">Add Entry</a>`
+            </div>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav> 
+    <main role="main" class="container">
+      <div class="starter-template">
+        <h1>B</h1>
+        <h1> </h1>
+ <!-- #################### PAGE TO DISPLAY ALL INCOME ENTRIES ##################-->
+        {{#incomeTable}}
+        <h1>Income Tracker</h1>
+        <table class="table table-striped">
+        <!-- <table style="width:50%"> -->
+          <thead class="thead-light">
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Income</th>
+              <th>Income Type</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          {{#incomeEntries}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{description}}</td>
+            <td>{{income}}</td>
+            <td>{{incomeType}}</td>
+            <td>
+              <form method='POST' action='./{{_id}}/delete' >
+                <a href=./{{_id}}/query>Delete</a>
+                <!--<button type="submit" class="btn btn-link">Delete</button>-->
+              </form>
+            </td>
+            <!--<td><a href=./{{_id}}/update>Update</a></td>-->
+            <td><a href=./{{_id}}/update>Update</a></td>
+          </tr>
+          {{/incomeEntries}}
+        </table>
+        <a class="btn btn-primary" href="./newIncome" role="button">New Entry</a>
+        <p> </p>
+        {{/incomeTable}}
+ <!-- ################### PAGE FOR DISPLAYING A SINGLE ENTRY TO DELETE ####################-->
+        {{#singleEntry}}
+        <h1>Entry Delete</h1>
+        {{#incomeEntry}}
+        <table class="table">
+          <tr>
+            <th scope="col">Catalogue ID</th>
+            <td>{{_id}}</td>
+          </tr>
+          <tr>
+            <th scope="col">Date</th>
+            <td>{{date}}</td>
+          </tr>
+          <tr>
+            <th scope="col">Description</th>
+            <td>{{description}}</td>
+          </tr>
+          <tr>
+            <th scope="col">Income</th>
+            <td>{{income}}</td>
+          </tr>
+          <tr>
+            <th scope="col">Income Type</th>
+            <td>{{incomeType}}</td>
+          </tr>
+        </table>
+        <form method='POST' action='./delete' >
+          <button type="submit" class="btn btn-primary">DELETE ENTRY</button>
+        </form>
+        {{/incomeEntry}}
+        {{/singleEntry}}
+        <br />
+        <br />
+        <br />
+ <!-- #################### PAGE FOR DISPLAYING A SINGLE ENTRY TO UPDATE #####################-->
+        {{#incomeUpdate}}
+        {{#incomeEntry}}
+        <h1>Entry Update</h1>
+        <form method='POST' action='./update' >
+        <!--<form method='POST' action='./{{_id}}/update' > -->
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">Date</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="80" name="date" class="form-control form-control-sm" placeholder="{{date}}" value="{{date}}">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">Description</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="80" name="description" class="form-control form-control-sm" placeholder="{{description}}" value="{{description}}">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">Income</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="80" class="form-control form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">Income Type</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="20" class="form-control form-control-sm" placeholder="{{incomeType}}" name="incomeType" value="{{incomeType}}"> 
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">UPDATE ENTRY</button>
+          <!--<input type="submit" /> -->
+        </form>
+        <br />
+        <br />
+        <form method='GET' action='./' >
+          <button type="submit" class="btn btn-primary">REFRESH</button>
+        </form>
+        {{/incomeEntry}}
+        {{/incomeUpdate}}
+ <!-- ########################## PAGE FOR A NEW INCOME ENTRY ################################# -->
+        {{#newEntry}}
+        <h1>Add Entry</h1>
+        <form method='POST' action='./new' >
+          <label for="exampleFormControlInput1">Date</label>
+          <div class="col-sm-10">
+            <input type="text" maxlength="80" name="date" class="form-control form-control-sm" placeholder="{{date}}" value="{{date}}">
+          </div>
+          <label for="exampleFormControlInput1">Description</label>
+          <div class="col-sm-10">
+            <input type="text" maxlength="80" name="description" class="form-control form-control-sm" placeholder="{{description}}" value="{{description}}">
+          </div>
+          <label for="exampleFormControlInput1">Income</label>
+          <div class="col-sm-10">
+            <input type="text" size="60" maxlength="80" class="form-control form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
+          </div>
+          <label for="exampleFormControlInput1">Income Type</label>
+          <div class="col-sm-10">
+            <input type="text" size="20" class="form-control form-control-sm" placeholder="{{incomeType}}" name="incomeType" value="{{incomeType}}"> 
+          </div>
+          <p> </p>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <form method='GET' action='./' >
+          <button type="submit" class="btn btn-primary">HOME</button>
+        </form>
+        {{/newEntry}}
+      </div>
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
