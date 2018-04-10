@@ -4,7 +4,11 @@ var IncomeEntrySchema = mongoose.Schema({
   "date" : String,
   "description" : String,
   "income" :  Number,
-  "incomeType" : String
+  "incomeType" : String,
+  "fedTaxes" : Number,
+  "stateTaxes" : Number,
+  "delIndicator" : String,
+  "updIndicator" : String
   });
 
 module.exports = mongoose.model('incomeEntry', IncomeEntrySchema);  // incomeEntry will be changed to plural by mongoose
