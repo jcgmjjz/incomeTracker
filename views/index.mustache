@@ -54,6 +54,8 @@
               <th>Description</th>
               <th>Income</th>
               <th>Income Type</th>
+              <th>Federal Taxes</th>
+              <th>State Taxes</th>
               <th></th>
               <th></th>
             </tr>
@@ -64,14 +66,16 @@
             <td>{{description}}</td>
             <td>{{income}}</td>
             <td>{{incomeType}}</td>
+            <td>{{fedTaxes}}</td>
+            <td>{{stateTaxes}}</td>
             <td>
               <form method='POST' action='./{{_id}}/delete' >
-                <a href=./{{_id}}/query>Delete</a>
+                <a href=./{{_id}}/query>{{delIndicator}}</a>
                 <!--<button type="submit" class="btn btn-link">Delete</button>-->
               </form>
             </td>
             <!--<td><a href=./{{_id}}/update>Update</a></td>-->
-            <td><a href=./{{_id}}/update>Update</a></td>
+            <td><a href=./{{_id}}/update>{{updIndicator}}</a></td>
           </tr>
           {{/incomeEntries}}
         </table>
@@ -102,6 +106,14 @@
           <tr>
             <th scope="col">Income Type</th>
             <td>{{incomeType}}</td>
+          </tr>
+          <tr>
+            <th scope="col">Federal Taxes</th>
+            <td>{{fedTaxes}}</td>
+          </tr>
+          <tr>
+            <th scope="col">State Taxes</th>
+            <td>{{stateTaxes}}</td>
           </tr>
         </table>
         <form method='POST' action='./delete' >
@@ -142,6 +154,18 @@
               <input type="text" maxlength="20" class="form-control form-control-sm" placeholder="{{incomeType}}" name="incomeType" value="{{incomeType}}"> 
             </div>
           </div>
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">Federal Taxes</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="20" class="form-control form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="exampleFormControlInput1">State Taxes</label>
+            <div class="col-sm-10">
+              <input type="text" maxlength="20" class="form-control form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
+            </div>
+          </div>
           <button type="submit" class="btn btn-primary">UPDATE ENTRY</button>
           <!--<input type="submit" /> -->
         </form>
@@ -171,6 +195,14 @@
           <label for="exampleFormControlInput1">Income Type</label>
           <div class="col-sm-10">
             <input type="text" size="20" class="form-control form-control-sm" placeholder="{{incomeType}}" name="incomeType" value="{{incomeType}}"> 
+          </div>
+          <label for="exampleFormControlInput1">Federal Taxes</label>
+          <div class="col-sm-10">
+            <input type="text" size="20" class="form-control form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
+          </div>
+          <label for="exampleFormControlInput1">State Taxes</label>
+          <div class="col-sm-10">
+            <input type="text" size="20" class="form-control form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
           </div>
           <p> </p>
           <button type="submit" class="btn btn-primary">Submit</button>

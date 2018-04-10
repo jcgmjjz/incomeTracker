@@ -35,9 +35,31 @@ app.use('/api/income', incomeEntries);
 // GET front page, table of all incomeEntries
 app.get('/', function (req, res) {
   IncomeEntry.find(function(err,incomeEntries){
+    
+    // calculate totals
+    let incomeTotal = 0;
+    let fedTaxesTotal = 0;
+    let stateTaxesTotal = 0;
+    for (let i=0; i < incomeEntries.length; i++){
+      incomeTotal = incomeTotal + incomeEntries[i].income;
+      fedTaxesTotal = fedTaxesTotal + incomeEntries[i].fedTaxes;
+      stateTaxesTotal = stateTaxesTotal + incomeEntries[i].stateTaxes;
+    }
+
+    // sort by date
+    var sortedEventDates = incomeEntries.sort(function(a, b) {
+      return a.date>b.date ? -1 : a.date<b.date ? 1 : 0;
+    });
+
+    // add total line to bottom of table without setting delIndicator and updIndicator
+    incomeEntries.push({ _id: "5aca979f3aab2f69d875a73a8",
+      date: 'Total', description: '',
+      income: incomeTotal, incomeType: '------', fedTaxes: fedTaxesTotal,
+      stateTaxes: stateTaxesTotal, __v: 0});
+
     if(err)return console.error(err);
     res.render('index', { incomeTable: true, singleEntry: false, incomeUpdate: false,
-                          newEntry: false, incomeEntries: incomeEntries})
+                          newEntry: false, incomeEntries: incomeEntries })
   });
  });
 
@@ -107,8 +129,8 @@ app.post('/:id/update', function(req, res, next) {
 // Add a incomeEntry 
 // post localhost:3000/income?author=bozou2&numPages=33
 app.post('/new', function(req, res, next) {
-  console.log("got to post");
-  console.log(req.body);
+  req.body.delIndicator = "Delete"; // add indicator for delete button
+  req.body.updIndicator = "Update"; // add indicator for update button
   let entryToCreate = new IncomeEntry(req.body);
   entryToCreate.save(function(err, incomeEntry){
     if(err) {
