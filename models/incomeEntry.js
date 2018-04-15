@@ -11,6 +11,9 @@ var IncomeEntrySchema = mongoose.Schema({
   "updIndicator" : String
   });
 
-module.exports = mongoose.model('incomeEntry', IncomeEntrySchema);  // incomeEntry will be changed to plural by mongoose
-                                                                    // (incomeentries) and that will be the name of the collection
-                                                                    // in the mongodb
+module.exports = mongoose.model('incomeEntry', IncomeEntrySchema); // incomeEntry will
+                                                        // be changed to plural by mongoose
+                                                        // (incomeentries) and that will be
+                                                        // the name of the collection
+                                                        // in the mongodb. The database is test.
+

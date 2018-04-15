@@ -8,6 +8,7 @@ let IncomeEntry = require('./models/incomeEntry');    // import the schema from 
                                                       // the DB. It will also be used as an
                                                       // array to hold all entries in the DB.
 
+let IncomeAddAndSub = require('./models/incomeAddAndSub');
 //mongoose.connect('mongodb://heroku_dk9gqdh0:g44hlper8aju8g6849k2432e7q@ds231229.mlab.com:31229/heroku_dk9gqdh0');
 
 mongoose.connect('mongodb://localhost/test');
@@ -32,7 +33,7 @@ app.set('views', __dirname + '/views');
 
 app.use('/api/income', incomeEntries);
 
-// GET front page, table of all incomeEntries
+// GET table of all incomeEntries, "Income Tracker" page
 app.get('/', function (req, res) {
   IncomeEntry.find(function(err,incomeEntries){
     
@@ -63,14 +64,14 @@ app.get('/', function (req, res) {
   });
  });
 
-// GET Insert new incomeEntry page
+// GET Insert go to "Add Entry" page
 app.get('/newIncome', function (req, res) {
-    res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
+  res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
                           newEntry: true})
   });
 
-// localhost:3000/income/5aad8814b562004ae03fc400
-// GET individual incomeEntry by catalogue id. Linked from front page
+
+// GET individual incomeEntry by catalogue id. Delete link to the "Entry Delete" page
 app.get('/:id/query', function(req, res, next) {
   IncomeEntry.findOne({_id: req.params.id}, function(err, incomeEntry) {
     if (err) return next(err);
@@ -79,8 +80,7 @@ app.get('/:id/query', function(req, res, next) {
     });
   });
 
-// localhost:3000/income/5aad8814b562004ae03fc400
-// GET individual incomeEntry by catalogue id. Linked from front page
+// GET individual incomeEntry by catalogue id. Got to "Entry Update" page
 app.get('/:id/update', function(req, res, next) {
   IncomeEntry.findOne({_id: req.params.id}, function(err, incomeEntry) {
     if (err) return next(err);
@@ -89,45 +89,23 @@ app.get('/:id/update', function(req, res, next) {
     });
   });
 
-// localhost:3000/income/5aad8814b562004ae03fc400
-// GET individual incomeEntry by catalogue id. Linked from front page
-app.get('/:id', function(req, res, next) {
-  IncomeEntry.findOne({_id: req.params.id}, function(err, incomeEntry) {
-    if (err) return next(err);
-      res.render('index', {incomeTable: false, singleEntry: false, incomeUpdate: true,
-                           newEntry: false, incomeEntry: incomeEntry});
-    });
-  });
-
-// localhost:3000/income/5aac8952aef4ac23dc115173
-// POST delete entry from individual entry page
+// POST delete entry from "Delete Entry" page
 app.post('/:id/delete', function(req, res, next) {
-  console.log('POST DELETE');
-  console.log(req.params["id"]);
   IncomeEntry.deleteOne({_id: req.params.id}, function(err, incomeEntry) {
-    console.log(req.params.id);
     if (err) return next(err);
       res.redirect('/'); // send the user back to the income table
-      //res.render('index', {incomeTable: false, singleEntry: true, incomeUpdate: false,
-      //                     newEntry: false, incomeEntry: incomeEntry});
     });
   });
 
-// localhost:3000/income/5aac8952aef4ac23dc115173
-// POST update incomeEntry from individual incomeEntry page
+// POST update incomeEntry from "Entry Update" page
 app.post('/:id/update', function(req, res, next) {
-  console.log('POST UPDATE');
-  console.log(req.body);
   IncomeEntry.findOneAndUpdate({_id: req.params.id}, req.body, function(err, incomeEntry) {
     if (err) return next(err);
       res.redirect('/'); // send the user back to the income table
-      //res.render('index', {incomeTable: false, singleEntry: false, incomeUpdate: true, 
-      //                     newEntry: false, incomeEntry: incomeEntry});
     });
   });
 
-// Add a incomeEntry 
-// post localhost:3000/income?author=bozou2&numPages=33
+// POST Add an incomeEntry from the "Add Entry" page
 app.post('/new', function(req, res, next) {
   req.body.delIndicator = "Delete"; // add indicator for delete button
   req.body.updIndicator = "Update"; // add indicator for update button
@@ -138,11 +116,145 @@ app.post('/new', function(req, res, next) {
       return console(err);
     }
     res.render('index', {incomeTable: false, singleEntry: false, incomeUpdate: false,
-                         newEntry: true, incomeEntry: incomeEntry});
+                         newEntry: true, incomeEntry: incomeEntry})
   });
 });
 
+// GET analysis page
+app.get('/analysis', function (req, res) {
 
+  // retrieve the additions and subtractions to income from
+  // the incomeAddAndSubs collection in the mongoDb
+  IncomeAddAndSub.find(function(err,incomeAddAndSubs){
+
+    //query the database for all income entries to calculate the sum
+    IncomeEntry.find(function(err,incomeEntries){
+
+      // calculate total income
+      let incomeTotal = 0;
+      for (let i=0; i < incomeEntries.length; i++){
+        incomeTotal = incomeTotal + incomeEntries[i].income;
+      }
+    
+      incomeTotal = incomeTotal + incomeAddAndSubs[0].incomeAddition1 +
+                    incomeAddAndSubs[0].incomeAddition2 -
+                    incomeAddAndSubs[0].incomeSubtraction1 -
+                    incomeAddAndSubs[0].incomeSubtraction2;
+
+      // replace these with brackets defined in the database
+      let Tbracket1 = 45000;
+      let Tbracket2 = 60000;
+      let Tbracket3 = 75000;
+      let Tbracket4 = 150000;
+      let Tbracket5 = 220000;
+      let topBracket, middleBracket, bottomBracket, hedroom = 0;
+
+      let analysisData  = { level0 : "", level1 : "", level2 : "", level3 : "",
+                        level4 : "", level5 : "", level6 : "",
+                        bracket3 : topBracket, bracket2 : middleBracket,
+                        bracket1 : bottomBracket, headroom : hedroom, 
+                        hrToBracket : 0,
+                        incomeAddition1 : incomeAddAndSubs[0].incomeAddition1,
+                        incomeAddition2 : incomeAddAndSubs[0].incomeAddition2,
+                        incomeSubtraction1 : incomeAddAndSubs[0].incomeSubtraction1,
+                        incomeSubtraction2 : incomeAddAndSubs[0].incomeSubtraction2};
+
+      // select the 3 brackets to display and position the
+      // incomeTotal
+      if( incomeTotal > Tbracket5 ){
+        analysisData.bracket3 = Tbracket5;
+        analysisData.bracket2 = Tbracket4;
+        analysisData.bracket1 = Tbracket3;
+        analysisData.level6 = incomeTotal;
+        analysisData.headroom = 0;
+        analysisData.hrToBracket = 0;
+      }else if( incomeTotal === Tbracket5 ){
+         analysisData.bracket3 = Tbracket5;
+         analysisData.bracket2 = Tbracket4;
+         analysisData.bracket1 = Tbracket3;
+         analysisData.level5 = incomeTotal;
+         analysisData.headroom = 0;
+         analysisData.hrToBracket = 0;
+      }else if( incomeTotal > Tbracket4 && incomeTotal < Tbracket5){
+        analysisData.bracket3 = Tbracket5;
+        analysisData.bracket2 = Tbracket4;
+        analysisData.bracket1 = Tbracket3;
+        analysisData.level4 = incomeTotal;
+        analysisData.headroom = Tbracket5 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket5;
+      }else if( incomeTotal === Tbracket4 ){
+        analysisData.bracket3 = Tbracket5;
+        analysisData.bracket2 = Tbracket4;
+        analysisData.bracket1 = Tbracket3;
+        analysisData.level3 = incomeTotal;
+        analysisData.headroom = Tbracket5 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket5;
+      }else if( incomeTotal > Tbracket3 && incomeTotal < Tbracket4){
+        analysisData.bracket3 = Tbracket5;
+        analysisData.bracket2 = Tbracket4;
+        analysisData.bracket1 = Tbracket3;
+        analysisData.level2 = incomeTotal;
+        analysisData.headroom = Tbracket4 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket4;
+      }else if( incomeTotal === Tbracket3 ){
+        analysisData.bracket3 = Tbracket5;
+        analysisData.bracket2 = Tbracket4;
+        analysisData.bracket1 = Tbracket3;
+        analysisData.level1 = incomeTotal;
+        analysisData.headroom = Tbracket4 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket4;
+      }else if( incomeTotal > Tbracket2 && incomeTotal < Tbracket3){
+        analysisData.bracket3 = Tbracket4;
+        analysisData.bracket2 = Tbracket3;
+        analysisData.bracket1 = Tbracket2;
+        analysisData.level2 = incomeTotal;
+        analysisData.headroom = Tbracket3 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket3;
+      }else if( incomeTotal === Tbracket2 ){
+        analysisData.bracket3 = Tbracket4;
+        analysisData.bracket2 = Tbracket3;
+        analysisData.bracket1 = Tbracket2;
+        analysisData.level1 = incomeTotal;
+        analysisData.headroom = Tbracket3 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket3
+      }else if( incomeTotal > Tbracket1 && incomeTotal < Tbracket2){
+        analysisData.bracket3 = Tbracket3;
+        analysisData.bracket2 = Tbracket2;
+        analysisData.bracket1 = Tbracket1;
+        analysisData.level2 = incomeTotal;
+        analysisData.headroom = Tbracket2 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket2;
+      }else if( incomeTotal === Tbracket1 ){
+        analysisData.bracket3 = Tbracket3;
+        analysisData.bracket2 = Tbracket2;
+        analysisData.bracket1 = Tbracket1;
+        analysisData.level1 = incomeTotal;
+        analysisData.headroom = Tbracket2 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket2;
+      }else if( incomeTotal < Tbracket1 ){
+        analysisData.bracket3 = Tbracket3;
+        analysisData.bracket2 = Tbracket2;
+        analysisData.bracket1 = Tbracket1;
+        analysisData.level0 = incomeTotal;
+        analysisData.headroom = Tbracket1 - incomeTotal;
+        analysisData.hrToBracket =  Tbracket1;
+      }
+
+      if(err)return console.error(err);
+        res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
+        newEntry: false, analysis: true, analysisData: analysisData });
+    });
+  });
+});
+
+// save adds and subtracts incomeAddAndSubs collection "Income Analysis" page
+app.post('/newAdds', function(req, res, next) {
+
+  IncomeAddAndSub.findOneAndUpdate({}, req.body, { upsert : true }, function(err, incomeAddAndSubs) {
+    if (err) return next(err);
+      res.redirect('/analysis'); // send the user back to the nalysis page
+    });
+  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
