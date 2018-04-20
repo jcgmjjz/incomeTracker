@@ -127,6 +127,15 @@ app.get('/analysis', function (req, res) {
   // the incomeAddAndSubs collection in the mongoDb
   IncomeAddAndSub.find(function(err,incomeAddAndSubs){
 
+    // if there is no collection in the database push an empty entry into the
+    // returned array so that any calculations needed succeed with values of 0. The collection
+    // incomeAddAndSubs will be created when the user tries to save an addition or subratction.
+    if(incomeAddAndSubs.length ==0){
+     incomeAddAndSubs.push({ _id: "5aca979f3aab2f69d875a73a8",
+                             incomeAddition1: 0, incomeAddition2: 0, incomeSubtraction1: 0,
+                             incomeSubtraction2: 0, __v: 0});
+    }
+
     //query the database for all income entries to calculate the sum
     IncomeEntry.find(function(err,incomeEntries){
 

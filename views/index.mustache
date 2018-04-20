@@ -54,9 +54,9 @@
             <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="./">Income Tracker</a>
+              <a class="dropdown-item" href="http://localhost:3000/">Income Tracker</a>
               <a class="dropdown-item" href="./analysis">Income Analysis</a>
               <a class="dropdown-item" href="./newIncome">New Entry</a>`
             </div>
@@ -161,7 +161,7 @@
           </div>
           <label for="exampleFormControlInput1">Income</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
           </div>
           <label for="exampleFormControlInput1">Income Type</label>
           <div class="col-sm-10">
@@ -176,11 +176,11 @@
           </div>
           <label for="exampleFormControlInput1">Federal Taxes</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
           </div>
           <label for="exampleFormControlInput1">State Taxes</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
           </div>
           <p> </p>
           <button type="submit" class="btn btn-primary">UPDATE ENTRY</button>
@@ -202,7 +202,7 @@
           </div>
           <label for="exampleFormControlInput1">Income</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{income}}" name="income" value="{{income}}">
           </div>
           <label for="exampleFormControlInput1">Income Type (select one)</label>
           <div class="col-sm-10">
@@ -217,11 +217,11 @@
           </div>
           <label for="exampleFormControlInput1">Federal Taxes</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{fedTaxes}}" name="fedTaxes" value="{{fedTaxes}}"> 
           </div>
           <label for="exampleFormControlInput1">State Taxes</label>
           <div class="col-sm-10">
-            <input type="text" size="10" maxlength="30" class="form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
           </div>
           <p> </p>
           <button type="submit" class="btn btn-primary">Submit</button>
@@ -237,20 +237,20 @@
           <fieldset class="addsAndSubs">
             <label for="exampleFormControlInput1">Addition 1</label>
             <div class="col-sm-10">
-              <input type="text" maxlength="6" size="12"  name="incomeAddition1" class="form-control-sm" placeholder="{{incomeAddition1}}" value="{{incomeAddition1}}">
+              <input type="number" maxlength="6" size="12"  name="incomeAddition1" class="form-control-sm" placeholder="{{incomeAddition1}}" value="{{incomeAddition1}}">
             </div>
             <label for="exampleFormControlInput1">Addition 2</label>
             <div>
             <div class="col-sm-10">
-              <input type="text" maxlength="6" size="12" name="incomeAddition2" class="form-control-sm" placeholder="{{incomeAddition2}}" value="{{incomeAddition2}}">
+              <input type="number" maxlength="6" size="12" name="incomeAddition2" class="form-control-sm" placeholder="{{incomeAddition2}}" value="{{incomeAddition2}}">
             </div>
             <label for="exampleFormControlInput1">Subtraction 1</label>
             <div class="col-sm-10">
-              <input type="text" maxlength="6" size="12" class="form-control-sm" placeholder="{{incomeSubtraction1}}" name="incomeSubtraction1" value="{{incomeSubtraction1}}">
+              <input type="number" maxlength="6" size="12" class="form-control-sm" placeholder="{{incomeSubtraction1}}" name="incomeSubtraction1" value="{{incomeSubtraction1}}">
             </div>
             <label for="exampleFormControlInput1">Subtraction 2</label>
             <div class="col-sm-10">
-              <input type="text" maxlength="6" size="12" class="form-control-sm" placeholder="{{incomeSubtraction2}}" name="incomeSubtraction2" value="{{incomeSubtraction2}}"> 
+              <input type="number" maxlength="6" size="12" class="form-control-sm" placeholder="{{incomeSubtraction2}}" name="incomeSubtraction2" value="{{incomeSubtraction2}}"> 
             </div>
             <p> </p>
             <p> </p>

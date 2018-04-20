@@ -19,7 +19,7 @@ describe('Income', () => {
   });
 
 
-  /* Test the /GET route. This gets all the books in the catalogue. */
+  /* Test the /GET route. This gets all the income entries in the database. */
   describe('/GET localhost:3000/books', () => {
     it('it should GET all the entries', (done) => {
       chai.request(server).get('/api/income')
@@ -32,10 +32,10 @@ describe('Income', () => {
     });
   });
 
-  /* Test the /POST route. This will insert a book into the database */
+  /* Test the /POST route. This will insert an entry into the database */
 
   describe('/POST localhost:3000/api/income', () => {
-    it('it should POST a book', (done) => {
+    it('it should POST an income entry', (done) => {
       let incomeEntry = {
         date : '2/5/2018',
         description : 'February paycheck',
