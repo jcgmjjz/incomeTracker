@@ -11,6 +11,10 @@ let IncomeEntry = require('./models/incomeEntry');    // import the schema from 
 let IncomeAddAndSub = require('./models/incomeAddAndSub');
 //mongoose.connect('mongodb://heroku_dk9gqdh0:g44hlper8aju8g6849k2432e7q@ds231229.mlab.com:31229/heroku_dk9gqdh0');
 
+
+// add for income bracket 
+let IncomeBracket = require('./models/incomeBracket');
+
 mongoose.connect('mongodb://localhost/test');
 /******* For Mustache *************/
 mustacheExpress = require('mustache-express');  // Logic-less {{mustache}} templates
