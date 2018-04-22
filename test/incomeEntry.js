@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 let mongoose = require("mongoose");
 let IncomeEntry = require('../models/incomeEntry');
 
@@ -10,7 +11,6 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
-
 describe('Income', () => {
   beforeEach((done) => { //Before each test empty the database
     IncomeEntry.remove({}, (err) => { 
@@ -20,7 +20,7 @@ describe('Income', () => {
 
 
   /* Test the /GET route. This gets all the income entries in the database. */
-  describe('/GET localhost:3000/books', () => {
+  describe('/GET localhost:3000/income', () => {
     it('it should GET all the entries', (done) => {
       chai.request(server).get('/api/income')
       .end((err, res) => {
@@ -42,6 +42,7 @@ describe('Income', () => {
         income : 682,
         incomeType :'salary' 
       };
+      //chai.request(server).post('/new')
       chai.request(server).post('/api/income')
       .set('content-type', 'application/x-www-form-urlencoded')
       .send(incomeEntry)
