@@ -21,7 +21,7 @@ describe('Income', () => {
 
   /* Test the /GET route. This gets all the income entries in the database. */
   describe('/GET localhost:3000/income', () => {
-    it('it should GET all the entries', (done) => {
+    it('it should GET all the income entries', (done) => {
       chai.request(server).get('/api/income')
       .end((err, res) => {
         res.should.have.status(200);
