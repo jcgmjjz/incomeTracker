@@ -58,7 +58,8 @@
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item" href="http://localhost:3000/">Income Tracker</a>
               <a class="dropdown-item" href="./analysis">Income Analysis</a>
-              <a class="dropdown-item" href="./newIncome">New Entry</a>`
+              <a class="dropdown-item" href="./newIncome">New Entry</a>
+              <a class="dropdown-item" href="./incomeBracket">Tax Bracket Entry</a>
             </div>
           </li>
         </ul>
@@ -106,6 +107,7 @@
         </table>
         <a class="btn btn-primary" href="./analysis" role="button">Analysis</a>
         <a class="btn btn-primary" href="./newIncome" role="button">New Entry</a>
+        <a class="btn btn-primary" href="./incomeBracket" role="button">Tax Bracket Entry</a>
         <p> </p>
         {{/incomeTable}}
  <!-- ################### PAGE FOR DISPLAYING A SINGLE ENTRY TO DELETE ####################-->
@@ -227,7 +229,38 @@
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         {{/newEntry}}
- <!-- ############### Additions and Sbtractions portion of Analysis Page  #############-->
+  <!-- ########################## PAGE FOR INCOME BRACKET ENTRY ################################# -->
+        {{#bracketEntry}}
+        {{#incomeBracket}}
+        <h1>Add Tax Bracket Entry</h1>
+        <form method='POST' action='./incomeBracket' >
+          <label for="exampleFormControlInput1">Income Tax Bracket 1</label>
+          <div class="col-sm-10">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket1}}" name="Tbracket1" value="{{Tbracket1}}">
+          </div>
+          <label for="exampleFormControlInput1">Income Tax Bracket 2</label>
+          <div class="col-sm-10">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket2}}" name="Tbracket2" value="{{Tbracket2}}">
+          </div>
+          <label for="exampleFormControlInput1">Income Tax Bracket 3</label>
+          <div class="col-sm-10">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket3}}" name="Tbracket3" value="{{Tbracket3}}">
+          </div>
+          <label for="exampleFormControlInput1">Income Tax Bracket 4</label>
+          <div class="col-sm-10">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket4}}" name="Tbracket4" value="{{Tbracket4}}">
+          </div>
+          <label for="exampleFormControlInput1">Income Tax Bracket 5</label>
+          <div class="col-sm-10">
+            <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket5}}" name="Tbracket5" value="{{Tbracket5}}">
+          </div>
+          <p> </p>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {{/incomeBracket}}
+        {{/bracketEntry}}      
+
+<!-- ############### Additions and Sbtractions portion of Analysis Page  #############-->
         {{#analysis}}
         {{#analysisData}}
         <h1> Income Analysis</h1>
