@@ -75,6 +75,30 @@ app.get('/newIncome', function (req, res) {
                           newEntry: true})
   });
 
+// GET Insert go to "Add Entry" page
+app.get('/incomeBracket', function (req, res) {
+  console.log("income Bracket");
+  // retrieve the additions and subtractions to income from
+  // the incomeAddAndSubs collection in the mongoDb
+  IncomeBracket.find(function(err,incomeBracket){
+    //console.log(incomeBracket[0].Tbracket1);
+    // if there is no collection in the database push an empty entry into the
+    // returned array so that any calculations needed succeed with values of 0. The collection
+    // incomeAddAndSubs will be created when the user tries to save an addition or subratction.
+    if(incomeBracket.length ==0){
+      incomeBracket.push({ _id: "5aca979f3aab2f69d875a73a9",
+                             Tbracket1: 45000, Tbracket2: 60000, Tbracket3: 75000,
+                             Tbracket4: 150000, Tbracket5: 220000, __v: 0});
+    }
+    //console.log("check enter value!");
+    console.log(incomeBracket[0].Tbracket1);
+    if (incomeBracket[0].Tbracket1 > 45000){
+      console.log("Tax Bracket1 is too high! Please enter tax bracket again! ");
+    } 
+    res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
+                          newEntry: false, bracketEntry: true, incomeBracket: incomeBracket})
+    });
+  });
 
 // GET individual incomeEntry by catalogue id. Delete link to the "Entry Delete" page
 app.get('/:id/query', function(req, res, next) {
@@ -276,6 +300,15 @@ app.post('/newAdds', function(req, res, next) {
   IncomeAddAndSub.findOneAndUpdate({}, req.body, { upsert : true }, function(err, incomeAddAndSubs) {
     if (err) return next(err);
       res.redirect('/analysis'); // send the user back to the nalysis page
+    });
+  });
+
+// save Tax brackets in incomeBracket collection "Income Bracket" page
+app.post('/incomeBracket', function(req, res, next) {
+
+  IncomeBracket.findOneAndUpdate({}, req.body, { upsert : true }, function(err, incomeBracket) {
+    if (err) return next(err);
+      res.redirect('/incomeBracket'); // send the user back to the nalysis page
     });
   });
 
