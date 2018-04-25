@@ -63,6 +63,11 @@ app.get('/', function (req, res) {
       income: incomeTotal, incomeType: '------', fedTaxes: fedTaxesTotal,
       stateTaxes: stateTaxesTotal, __v: 0});
 
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntries);
+      return;
+    }
+
     if(err)return console.error(err);
     res.render('index', { incomeTable: true, singleEntry: false, incomeUpdate: false,
                           newEntry: false, incomeEntries: incomeEntries })
@@ -136,7 +141,6 @@ app.post('/:id/update', function(req, res, next) {
 
 // POST Add an incomeEntry from the "Add Entry" page
 app.post('/new', function(req, res, next) {
-  console.log(config.mode[app.settings.env]);
   req.body.delIndicator = "Delete"; // add indicator for delete button
   req.body.updIndicator = "Update"; // add indicator for update button
   let entryToCreate = new IncomeEntry(req.body);
@@ -144,6 +148,11 @@ app.post('/new', function(req, res, next) {
     if(err) {
       console.log('post error saving to mongodb');
       return console(err);
+    }
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
     }
     res.render('index', {incomeTable: false, singleEntry: false, incomeUpdate: false,
                          newEntry: true, incomeEntry: incomeEntry})
