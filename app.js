@@ -38,8 +38,15 @@ app.set('views', __dirname + '/views');
 
 app.use('/api/income', incomeEntries);
 
-// GET table of all incomeEntries, "Income Tracker" page
 app.get('/', function (req, res) {
+  console.log("Enter Main Menu");
+  res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
+    newEntry: false, mainMenu: true })
+});
+
+// GET table of all incomeEntries, "Income Tracker" page
+app.get('/incomeTracker', function (req, res) {
+//app.get('/', function (req, res) {
   IncomeEntry.find(function(err,incomeEntries){
     
     // calculate totals
@@ -80,28 +87,63 @@ app.get('/newIncome', function (req, res) {
                           newEntry: true})
   });
 
-// GET Insert go to "Add Entry" page
+// GET "Income Bracket" page
 app.get('/incomeBracket', function (req, res) {
-  console.log("income Bracket");
-  // retrieve the additions and subtractions to income from
-  // the incomeAddAndSubs collection in the mongoDb
+
+  // retrieve income bracket info from
+  // the incomebrackets collection in the mongoDb
   IncomeBracket.find(function(err,incomeBracket){
-    //console.log(incomeBracket[0].Tbracket1);
+
     // if there is no collection in the database push an empty entry into the
     // returned array so that any calculations needed succeed with values of 0. The collection
-    // incomeAddAndSubs will be created when the user tries to save an addition or subratction.
+    // incomebrackets will be created when the user tries to save.
     if(incomeBracket.length ==0){
       incomeBracket.push({ _id: "5aca979f3aab2f69d875a73a9",
                              Tbracket1: 45000, Tbracket2: 60000, Tbracket3: 75000,
                              Tbracket4: 150000, Tbracket5: 220000, __v: 0});
     }
-    //console.log("check enter value!");
-    console.log(incomeBracket[0].Tbracket1);
-    if (incomeBracket[0].Tbracket1 > 45000){
-      console.log("Tax Bracket1 is too high! Please enter tax bracket again! ");
-    } 
     res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
                           newEntry: false, bracketEntry: true, incomeBracket: incomeBracket})
+    });
+  });
+
+
+// GET "Income Bracket Error" page
+app.get('/incomeBracketError', function (req, res) {
+
+  // retrieve the incomeBracket data 
+  // the ncomebrackets collection in the mongoDb
+  IncomeBracket.find(function(err,incomeBracket){
+
+    let bracketData = {};
+
+    if(incomeBracket.length ==0){
+      // if there is no collection in the database push a default entry into the
+      // returned array. The collection
+      // incomebrackets will be created when the user tries to save the brackets
+      // Add an error message
+      bracketData = { Tbracket1: 45000, Tbracket2: 60000, Tbracket3: 75000,
+                      Tbracket4: 150000, Tbracket5: 220000, Message: "Error: (Income Tax Bracket 1) < (IncomeTax Bracket 2) < (Income Tax Bracket 3) < (Income Tax Bracket 4) < (Income Tax Bracket 5)" };
+    } else {
+      // re-render data from the mongoDb with a message to the user.
+      // Add an error message
+      bracketData = { Tbracket1: incomeBracket[0].Tbracket1, Tbracket2: incomeBracket[0].Tbracket2, 
+                      Tbracket3: incomeBracket[0].Tbracket3, Tbracket4: incomeBracket[0].Tbracket4,
+                      Tbracket5: incomeBracket[0].Tbracket5, Message: "Error: (Income Tax Bracket 1) < (Income Tax Bracket 2) < (Income Tax Bracket 3) < (Income Tax Bracket 4) < (Income Tax Bracket 5)"};
+    }
+
+    // if there is no collection in the database push a default entry into the
+    // returned array. The collection
+    // incomebrackets will be created when the user tries to save the brackets
+    if(incomeBracket.length ==0){
+      
+      incomeBracket.push({ _id: "5aca979f3aab2f69d875a73a9",
+                             Tbracket1: 45000, Tbracket2: 60000, Tbracket3: 75000,
+                             Tbracket4: 150000, Tbracket5: 220000, __v: 0});
+    }
+
+    res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
+                          newEntry: false, bracketEntry: true, incomeBracket: bracketData})
     });
   });
 
@@ -314,12 +356,23 @@ app.post('/newAdds', function(req, res, next) {
 
 // save Tax brackets in incomeBracket collection "Income Bracket" page
 app.post('/incomeBracket', function(req, res, next) {
-
+  // if there is no collection in the database push an empty entry into the
+  // returned array so that any calculations needed succeed with values of 0. The collection
+  // incomeAddAndSubs will be created when the user tries to save an addition or subratction.
+  if(Number(req.body.Tbracket1) > Number(req.body.Tbracket2) ||
+     Number(req.body.Tbracket2) > Number(req.body.Tbracket3) ||
+     Number(req.body.Tbracket3) > Number(req.body.Tbracket4) ||
+     Number(req.body.Tbracket4) > Number(req.body.Tbracket5) ){
+    res.redirect('/incomeBracketError');
+    return;
+  }
   IncomeBracket.findOneAndUpdate({}, req.body, { upsert : true }, function(err, incomeBracket) {
     if (err) return next(err);
-      res.redirect('/incomeBracket'); // send the user back to the nalysis page
-    });
+     res.redirect('/incomeBracket'); // send the user back to the nalysis page
   });
+});  
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,7 @@
 <html lang="en">
   <head>
-    <title>{{name}} Income Tracker {{name}}</title>
+    <title>{{name}} Income Tracker Menu {{name}}</title>
+   // <title>{{name}} Income Tracker {{name}}</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -69,6 +70,13 @@
       <div class="starter-template">
         <h1>B</h1>
         <h1> </h1>
+        <h1>Income Tracker Application</h1>
+ <!-- #################### MAIN PAGE TO DISPLAY MENU ##################-->    
+        {{#mainMenu}}
+          <a class="btn btn-primary" href="./analysis" role="button">Analysis</a>
+          <a class="btn btn-primary" href="./incomeTracker" role="button">Income Tracker</a>
+          <a class="btn btn-primary" href="./incomeBracket" role="button">Tax Bracket Entry</a>
+        {{/mainMenu}}
  <!-- #################### PAGE TO DISPLAY ALL INCOME ENTRIES ##################-->
         {{#incomeTable}}
         <h1>Income Tracker</h1>
@@ -105,9 +113,9 @@
           </tr>
           {{/incomeEntries}}
         </table>
-        <a class="btn btn-primary" href="./analysis" role="button">Analysis</a>
+        <!--<a class="btn btn-primary" href="./analysis" role="button">Analysis</a> -->
         <a class="btn btn-primary" href="./newIncome" role="button">New Entry</a>
-        <a class="btn btn-primary" href="./incomeBracket" role="button">Tax Bracket Entry</a>
+        <!-- <a class="btn btn-primary" href="./incomeBracket" role="button">Tax Bracket Entry</a> -->
         <p> </p>
         {{/incomeTable}}
  <!-- ################### PAGE FOR DISPLAYING A SINGLE ENTRY TO DELETE ####################-->
@@ -257,6 +265,7 @@
           <p> </p>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+        <p><span id="redspan">{{Message}}</span></p>
         {{/incomeBracket}}
         {{/bracketEntry}}      
 
