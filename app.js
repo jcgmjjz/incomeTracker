@@ -38,6 +38,7 @@ app.set('views', __dirname + '/views');
 
 app.use('/api/income', incomeEntries);
 
+// Main application page
 app.get('/', function (req, res) {
   res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
     newEntry: false, mainMenu: true })
@@ -45,7 +46,6 @@ app.get('/', function (req, res) {
 
 // GET table of all incomeEntries, "Income Tracker" page
 app.get('/incomeTracker', function (req, res) {
-//app.get('/', function (req, res) {
   IncomeEntry.find(function(err,incomeEntries){
     
     // calculate totals
@@ -168,17 +168,28 @@ app.get('/:id/update', function(req, res, next) {
 app.post('/:id/delete', function(req, res, next) {
   IncomeEntry.deleteOne({_id: req.params.id}, function(err, incomeEntry) {
     if (err) return next(err);
-      res.redirect('/'); // send the user back to the income table
-    });
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
+    }
+    res.redirect('/incomeTracker'); // send the user back to the income table
   });
+});
 
 // POST update incomeEntry from "Entry Update" page
 app.post('/:id/update', function(req, res, next) {
   IncomeEntry.findOneAndUpdate({_id: req.params.id}, req.body, function(err, incomeEntry) {
     if (err) return next(err);
-      res.redirect('/'); // send the user back to the income table
-    });
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
+    }
+
+    res.redirect('/incomeTracker'); // send the user back to the income table
   });
+});
 
 // POST Add an incomeEntry from the "Add Entry" page
 app.post('/new', function(req, res, next) {
