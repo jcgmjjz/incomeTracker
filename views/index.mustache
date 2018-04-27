@@ -43,24 +43,24 @@
 
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <!--<a class="navbar-brand" href="#">Navbar</a> 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
+      </button>-->
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
             <!--<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
-            <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="/incomeTracker">Income Tracker</a>
-              <a class="dropdown-item" href="./analysis">Income Analysis</a>
-              <a class="dropdown-item" href="./newIncome">New Entry</a>
-              <a class="dropdown-item" href="./incomeBracket">Tax Bracket Entry</a>
+              <a class="dropdown-item" href="../incomeTracker">Income Tracker</a>
+              <a class="dropdown-item" href="../analysis">Income Analysis</a>
+              <a class="dropdown-item" href="../newIncome">New Income Entry</a>
+              <a class="dropdown-item" href="../incomeBracket">Tax Bracket Entry</a>
             </div>
           </li>
         </ul>
@@ -70,12 +70,14 @@
       <div class="starter-template">
         <h3>B</h3>
         <h1> </h1>
-        <h1 class="text-success"><strong>IncomeTrx</strong></h1>
-     
+        <h1 class="text-success"><strong>IncomTrx</strong></h1>
+        <hr>
+        <hr>
+        <hr>
  <!-- #################### MAIN PAGE TO DISPLAY MENU ##################-->    
         {{#mainMenu}}
-          <h1></h1> 
-          <h1></h1>
+          <h5>Income Tracking and Analysis Web Site</h5>
+          <hr>
           <a class="btn btn-primary" href="./analysis" role="button">Analysis</a>
           <a class="btn btn-primary" href="./incomeTracker" role="button">Income Tracker</a>
           <a class="btn btn-primary" href="./incomeBracket" role="button">Tax Bracket Entry</a>
@@ -201,7 +203,7 @@
         {{/incomeUpdate}}
  <!-- ########################## PAGE FOR A NEW INCOME ENTRY ################################# -->
         {{#newEntry}}
-        <h2>Add Entry</h2>
+        <h2>New Entry</h2>
         <form method='POST' action='./new' >
           <label for="exampleFormControlInput1">Date</label>
           <div class="col-sm-10">
@@ -235,7 +237,7 @@
             <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{stateTaxes}}" name="stateTaxes" value="{{stateTaxes}}"> 
           </div>
           <p> </p>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </form>
         {{/newEntry}}
   <!-- ########################## PAGE FOR INCOME BRACKET ENTRY ################################# -->
@@ -264,7 +266,7 @@
             <input type="number" size="10" maxlength="30" class="form-control-sm" placeholder="{{Tbracket5}}" name="Tbracket5" value="{{Tbracket5}}">
           </div>
           <p> </p>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </form>
         <p><span class="text-danger">{{Message}}</span></p>
         {{/incomeBracket}}
@@ -322,8 +324,6 @@
           <tr><td class="min">{{bracket1}}</td> <td class="min"><strong><span id="greenspan">{{level1}}</span></strong></td></tr>
           <tr><td class="min">--</td> <td class="min"><strong><span id="greenspan">{{level0}}</span></strong></td></tr>
         </table>
-        <hr>
-        <hr>
         <hr>
         <h3 class="analysis" >${{headroom}} headroom to ${{hrToBracket}} bracket.</h3>
         {{/analysisData}}

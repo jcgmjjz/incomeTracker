@@ -56,30 +56,6 @@ describe('IncomeTracker', () => {
     });
   });
 
-  /* Test the /Get id route. This will get a specific entry by id. */
-  describe('/GET/:id /api/income', () => {
-    it('it should GET an incomeEntry by the given id', (done) => {
-      let incomeEntry = new IncomeEntry({ date: "5/6/2017",
-                                          description: 'January salary', income: 3440,
-                                          incomeType: "salary" });
-      incomeEntry.save((err, incomeEntry) => {
-        chai.request(server).get('/api/income/' + incomeEntry.id)
-        .send()
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('date');
-          res.body.should.have.property('description');
-          res.body.should.have.property('income');
-          res.body.should.have.property('incomeType');
-          res.body.should.have.property('_id').eql(incomeEntry.id);
-          done();
-        });
-      });
-
-    });
-  });
-
   // WORKS
   describe('POST/id/update/', () => {
     it('it should UPDATE an incomeEntry given the id', (done) => {
