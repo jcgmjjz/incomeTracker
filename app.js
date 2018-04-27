@@ -38,15 +38,14 @@ app.set('views', __dirname + '/views');
 
 app.use('/api/income', incomeEntries);
 
+// Main application page
 app.get('/', function (req, res) {
-  console.log("Enter Main Menu");
   res.render('index', { incomeTable: false, singleEntry: false, incomeUpdate: false,
     newEntry: false, mainMenu: true })
 });
 
 // GET table of all incomeEntries, "Income Tracker" page
 app.get('/incomeTracker', function (req, res) {
-//app.get('/', function (req, res) {
   IncomeEntry.find(function(err,incomeEntries){
     
     // calculate totals
@@ -69,6 +68,11 @@ app.get('/incomeTracker', function (req, res) {
       date: 'Total', description: '',
       income: incomeTotal, incomeType: '------', fedTaxes: fedTaxesTotal,
       stateTaxes: stateTaxesTotal, __v: 0});
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntries);
+      return;
+    }
 
     if(err)return console.error(err);
     res.render('index', { incomeTable: true, singleEntry: false, incomeUpdate: false,
@@ -164,21 +168,31 @@ app.get('/:id/update', function(req, res, next) {
 app.post('/:id/delete', function(req, res, next) {
   IncomeEntry.deleteOne({_id: req.params.id}, function(err, incomeEntry) {
     if (err) return next(err);
-      res.redirect('/'); // send the user back to the income table
-    });
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
+    }
+    res.redirect('/incomeTracker'); // send the user back to the income table
   });
+});
 
 // POST update incomeEntry from "Entry Update" page
 app.post('/:id/update', function(req, res, next) {
   IncomeEntry.findOneAndUpdate({_id: req.params.id}, req.body, function(err, incomeEntry) {
     if (err) return next(err);
-      res.redirect('/'); // send the user back to the income table
-    });
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
+    }
+
+    res.redirect('/incomeTracker'); // send the user back to the income table
   });
+});
 
 // POST Add an incomeEntry from the "Add Entry" page
 app.post('/new', function(req, res, next) {
-  console.log(config.mode[app.settings.env]);
   req.body.delIndicator = "Delete"; // add indicator for delete button
   req.body.updIndicator = "Update"; // add indicator for update button
   let entryToCreate = new IncomeEntry(req.body);
@@ -186,6 +200,11 @@ app.post('/new', function(req, res, next) {
     if(err) {
       console.log('post error saving to mongodb');
       return console(err);
+    }
+
+    if(config.mode[app.settings.env] == true) {
+      res.status(200).send(incomeEntry);
+      return;
     }
     res.render('index', {incomeTable: false, singleEntry: false, incomeUpdate: false,
                          newEntry: true, incomeEntry: incomeEntry})
@@ -227,14 +246,18 @@ app.get('/analysis', function (req, res) {
         // calculate total income
         let incomeTotal = 0;
         for (let i=0; i < incomeEntries.length; i++){
-          incomeTotal = incomeTotal + incomeEntries[i].income;
+          incomeTotal = incomeTotal + Number(incomeEntries[i].income);
         }
       
-        incomeTotal = incomeTotal + incomeAddAndSubs[0].incomeAddition1 +
-                      incomeAddAndSubs[0].incomeAddition2 -
-                      incomeAddAndSubs[0].incomeSubtraction1 -
-                      incomeAddAndSubs[0].incomeSubtraction2;
-  
+        incomeTotal = incomeTotal + Number(incomeAddAndSubs[0].incomeAddition1) +
+                      Number(incomeAddAndSubs[0].incomeAddition2) -
+                      Number(incomeAddAndSubs[0].incomeSubtraction1) -
+                      Number(incomeAddAndSubs[0].incomeSubtraction2);
+
+        if( incomeTotal < 0){
+          incomeTotal = 0;
+        }
+          
         let topBracket, middleBracket, bottomBracket, hedroom = 0;
   
         let analysisData  = { level0 : "", level1 : "", level2 : "", level3 : "",
@@ -249,83 +272,83 @@ app.get('/analysis', function (req, res) {
   
         // select the 3 brackets to display and position the
         // incomeTotal
-        if( incomeTotal > incomeBrackets[0].Tbracket5 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+        if( incomeTotal > Number(incomeBrackets[0].Tbracket5) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
           analysisData.level6 = incomeTotal;
           analysisData.headroom = 0;
           analysisData.hrToBracket = 0;
-        }else if( incomeTotal === incomeBrackets[0].Tbracket5 ){
-           analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-           analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-           analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+        }else if( incomeTotal === Number(incomeBrackets[0].Tbracket5) ){
+           analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+           analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+           analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
            analysisData.level5 = incomeTotal;
            analysisData.headroom = 0;
            analysisData.hrToBracket = 0;
-        }else if( incomeTotal > incomeBrackets[0].Tbracket4 && incomeTotal < incomeBrackets[0].Tbracket5){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+        }else if( incomeTotal > Number(incomeBrackets[0].Tbracket4) && incomeTotal < Number(incomeBrackets[0].Tbracket5)){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
           analysisData.level4 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket5 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket5;
-        }else if( incomeTotal === incomeBrackets[0].Tbracket4 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket5) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket5);
+        }else if( incomeTotal === Number(incomeBrackets[0].Tbracket4) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
           analysisData.level3 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket5 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket5;
-        }else if( incomeTotal > incomeBrackets[0].Tbracket3 && incomeTotal < incomeBrackets[0].Tbracket4){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket5) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket5);
+        }else if( incomeTotal > Number(incomeBrackets[0].Tbracket3) && incomeTotal < Number(incomeBrackets[0].Tbracket4)){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
           analysisData.level2 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket4 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket4;
-        }else if( incomeTotal === incomeBrackets[0].Tbracket3 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket5;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket3;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket4) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket4);
+        }else if( incomeTotal === Number(incomeBrackets[0].Tbracket3) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket5);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket3);
           analysisData.level1 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket4 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket4;
-        }else if( incomeTotal > incomeBrackets[0].Tbracket2 && incomeTotal < incomeBrackets[0].Tbracket3){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket3;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket2;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket4) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket4);
+        }else if( incomeTotal > Number(incomeBrackets[0].Tbracket2) && incomeTotal < Number(incomeBrackets[0].Tbracket3)){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket3);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket2);
           analysisData.level2 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket3 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket3;
-        }else if( incomeTotal === incomeBrackets[0].Tbracket2 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket4;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket3;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket2;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket3) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket3);
+        }else if( incomeTotal === Number(incomeBrackets[0].Tbracket2) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket4);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket3);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket2);
           analysisData.level1 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket3 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket3
-        }else if( incomeTotal > incomeBrackets[0].Tbracket1 && incomeTotal < incomeBrackets[0].Tbracket2){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket3;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket2;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket1;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket3) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket3);
+        }else if( incomeTotal > Number(incomeBrackets[0].Tbracket1) && incomeTotal < Number(incomeBrackets[0].Tbracket2)){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket3);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket2);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket1);
           analysisData.level2 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket2 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket2;
-        }else if( incomeTotal === incomeBrackets[0].Tbracket1 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket3;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket2;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket1;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket2) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket2);
+        }else if( incomeTotal === Number(incomeBrackets[0].Tbracket1) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket3);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket2);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket1);
           analysisData.level1 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket2 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket2;
-        }else if( incomeTotal < incomeBrackets[0].Tbracket1 ){
-          analysisData.bracket3 = incomeBrackets[0].Tbracket3;
-          analysisData.bracket2 = incomeBrackets[0].Tbracket2;
-          analysisData.bracket1 = incomeBrackets[0].Tbracket1;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket2) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket2);
+        }else if( incomeTotal < Number(incomeBrackets[0].Tbracket1) ){
+          analysisData.bracket3 = Number(incomeBrackets[0].Tbracket3);
+          analysisData.bracket2 = Number(incomeBrackets[0].Tbracket2);
+          analysisData.bracket1 = Number(incomeBrackets[0].Tbracket1);
           analysisData.level0 = incomeTotal;
-          analysisData.headroom = incomeBrackets[0].Tbracket1 - incomeTotal;
-          analysisData.hrToBracket =  incomeBrackets[0].Tbracket1;
+          analysisData.headroom = Number(incomeBrackets[0].Tbracket1) - incomeTotal;
+          analysisData.hrToBracket =  Number(incomeBrackets[0].Tbracket1);
         }
   
         if(err)return console.error(err);
@@ -347,9 +370,8 @@ app.post('/newAdds', function(req, res, next) {
 
 // save Tax brackets in incomeBracket collection "Income Bracket" page
 app.post('/incomeBracket', function(req, res, next) {
-  // if there is no collection in the database push an empty entry into the
-  // returned array so that any calculations needed succeed with values of 0. The collection
-  // incomeAddAndSubs will be created when the user tries to save an addition or subratction.
+
+  // check to make sure Tbrackets are in increasing order.
   if(Number(req.body.Tbracket1) > Number(req.body.Tbracket2) ||
      Number(req.body.Tbracket2) > Number(req.body.Tbracket3) ||
      Number(req.body.Tbracket3) > Number(req.body.Tbracket4) ||

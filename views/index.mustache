@@ -57,7 +57,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="http://localhost:3000/">Income Tracker</a>
+              <a class="dropdown-item" href="/incomeTracker">Income Tracker</a>
               <a class="dropdown-item" href="./analysis">Income Analysis</a>
               <a class="dropdown-item" href="./newIncome">New Entry</a>
               <a class="dropdown-item" href="./incomeBracket">Tax Bracket Entry</a>
@@ -265,7 +265,7 @@
           <p> </p>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <p><span id="redspan">{{Message}}</span></p>
+        <p><span class="text-danger">{{Message}}</span></p>
         {{/incomeBracket}}
         {{/bracketEntry}}      
 
@@ -310,7 +310,7 @@
           </thead>
           {{#analysisData}}
           <tr><td class="min">--</td> <td class="min"><strong><span id="greenspan">{{level6}}</span></strong></td></tr>
-          <tr><td class="min">{{bracket3}}</td> <td class="min"><strong><span id="greenspan">{{levels5}}</span></strong></td></tr>
+          <tr><td class="min">{{bracket3}}</td> <td class="min"><strong><span id="greenspan">{{level5}}</span></strong></td></tr>
           <tr><td class="min">--</td> <td class="min"><strong><span id="greenspan"></span></strong></td></tr>
           <tr><td class="min">--</td> <td class="min"><strong><span id="greenspan">{{level4}}</span></strong></td></tr>
           <tr><td class="min">--</td> <td class="min"><strong><span id="greenspan"></span></strong></td></tr>

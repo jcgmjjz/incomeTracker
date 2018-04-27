@@ -7,11 +7,10 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
-//var request = require('superagent');
 
 chai.use(chaiHttp);
 
-describe('Income', () => {
+describe('IncomeTracker', () => {
   beforeEach((done) => { //Before each test empty the database
     IncomeEntry.remove({}, (err) => { 
       done();         
@@ -19,22 +18,24 @@ describe('Income', () => {
   });
 
 
-  /* Test the /GET route. This gets all the income entries in the database. */
-  describe('/GET localhost:3000/income', () => {
-    it('it should GET all the entries', (done) => {
-      chai.request(server).get('/api/income')
+  /* Test the /GET route Total line. This gets all the income entries in the database. */
+  // WORKS
+  describe('GET localhost:3000/incomeTracker', () => {
+    it('it should GET all the income entries', (done) => {
+      chai.request(server).get('/incomeTracker')
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a('array');
-        res.body.length.should.be.eql(0);
+        res.body.length.should.be.eql(1);
+        res.body.should.deep.include({ _id: '5aca979f3aab2f69d875a73a8', date: 'Total', description: '', income: 0, incomeType: '------', fedTaxes: 0, stateTaxes: 0, __v: 0 });
         done();
       });
     });
   });
 
   /* Test the /POST route. This will insert an entry into the database */
-
-  describe('/POST localhost:3000/api/income', () => {
+  // WORKS
+  describe('POST localhost:3000/new', () => {
     it('it should POST an income entry', (done) => {
       let incomeEntry = {
         date : '2/5/2018',
@@ -42,9 +43,7 @@ describe('Income', () => {
         income : 682,
         incomeType :'salary' 
       };
-      //chai.request(server).post('/new')
-      chai.request(server).post('/api/income')
-      .set('content-type', 'application/x-www-form-urlencoded')
+      chai.request(server).post('/new')
       .send(incomeEntry)
       .end((err, res) => {
         res.should.have.status(200);
@@ -81,8 +80,8 @@ describe('Income', () => {
     });
   });
 
-
-  describe('/PUT/:id incomeEntry', () => {
+  // WORKS
+  describe('POST/id/update/', () => {
     it('it should UPDATE an incomeEntry given the id', (done) => {
       let incomeEntry = new IncomeEntry({date: "01/28/2018",
                                         description: 'July salary', income: 334,
@@ -94,10 +93,15 @@ describe('Income', () => {
           incomeType: 'salary',
         };
 
-        chai.request(server).put('/api/income/' + incomeEntry.id).send(changeEntry)
+        chai.request(server).post('/' + incomeEntry.id + '/update/').send(changeEntry)
         .end((err, res) => {
-          res.should.have.status(204);
+          res.should.have.status(200);
           res.body.should.be.a('object');
+          res.body.should.have.property('date');
+          res.body.should.have.property('description');
+          res.body.should.have.property('income');
+          res.body.should.have.property('incomeType');
+          res.body.should.have.property('_id').eql(incomeEntry.id);
           //res.body.should.have.property('numPages');
           done();
         });
@@ -105,21 +109,21 @@ describe('Income', () => {
     });
   });
 
-  describe('/DELETE/:id income', () => {
+  // WORKS
+  describe('DELETE/:id income', () => {
     it('it should DELETE an incomeEntry given the id', (done) => {
       let incomeEntry = new IncomeEntry({date: "02/12/18",
                                         description: 'June salary', income: 713,
                                         incomeType: "dividends"})
       incomeEntry.save((err, incomeEntry) => {
-        chai.request(server).delete('/api/income/' + incomeEntry.id)
+        chai.request(server).post('/' + incomeEntry.id + '/delete/').send()
         .end((err, res) => {
-          res.should.have.status(204);
+          res.should.have.status(200);
           res.body.should.be.a('object');
           done();
         });
       });
     });
   });
-
 });
 

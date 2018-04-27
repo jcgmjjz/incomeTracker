@@ -1,8 +1,8 @@
 
 var config =  {};
 config.mode = {
-  production : "false",
-  test : "true"
+  production : false,
+  test : true
 };
 module.exports = config;
 
